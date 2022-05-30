@@ -1,0 +1,9 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: CloudFormation template for IAM user
+Resources:
+  IAM:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: dreo-ugo
+      LoginProfile:
+        Password: Newuser-12345

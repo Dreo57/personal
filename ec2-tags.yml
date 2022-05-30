@@ -4,15 +4,15 @@ Description: A sample template
 Resources:
   MyEC2Instance:
     Type: "AWS::EC2::Instance"
-    Properties: 
+    Properties:
       ImageId: "ami-0022f774911c1d690"
       InstanceType: t2.micro
-      KeyName: vamsi-chunduru # replace the keypair
+      KeyName: JJtechKeyPair # replace the keypair
       BlockDeviceMappings:
         -
           DeviceName: /dev/xvda
           Ebs:
-            VolumeType: gp2            
+            VolumeType: gp2
             DeleteOnTermination: true
             VolumeSize: 8
       Tags:
@@ -20,4 +20,3 @@ Resources:
           Value: demo-ec2
         - Key: createdBy
           Value: DevOps Team
-        

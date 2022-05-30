@@ -1,0 +1,10 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: CloudFormation template for s3 bucket
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: dreo-32472
+      AccessControl: PublicRead
+      VersioningConfiguration:
+        Status: Enabled
