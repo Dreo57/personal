@@ -1,0 +1,33 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "",
+    "Metadata": {
+
+    },
+    "Parameters":{
+
+    },
+    "Mappings": {
+
+    },
+    "Conditions": {
+
+    },
+    "Resources": {
+      "PracALB": {
+         "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+         "Properties": {
+           "IpAddressType" : "ipv4",
+           "Name" : "ec2-ALB",
+           "Scheme" : "internet-facing",
+           "SecurityGroups" : [ {"Fn::ImportValue" : {"Fn::Sub": "SecGrpId"}} ],
+           "Subnets" : [{"Fn::ImportValue" : {"Fn::Sub": "PracSubId"}}, {"Fn::ImportValue" : {"Fn::Sub": "PracSubId2"}}],
+           "Type" : "application"
+         }
+      }
+    },
+
+    "Outputs": {
+
+    }
+}
