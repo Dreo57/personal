@@ -1,0 +1,101 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "",
+    "Metadata": {
+
+    },
+    "Parameters":{
+      "HealthCheckPath": {
+          "Description": "Path of the Health Check",
+          "Type": "String",
+          "Default": "/"
+      }
+    },
+    "Mappings": {
+
+    },
+    "Conditions": {
+
+    },
+    "Resources": {
+      "PracALB": {
+         "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+         "Properties": {
+           "IpAddressType" : "ipv4",
+           "Name" : "ec2-ALB",
+           "Scheme" : "internet-facing",
+           "SecurityGroups" : [ {"Fn::ImportValue" : {"Fn::Sub": "SecGrpId"}} ],
+           "Subnets" : [{"Fn::ImportValue" : {"Fn::Sub": "PracSubId"}}, {"Fn::ImportValue" : {"Fn::Sub": "PracSubId2"}}],
+           "Type" : "application"
+         }
+      },
+      "PracTG": {
+         "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+         "Properties": {
+           "HealthCheckEnabled" : true,
+           "HealthCheckIntervalSeconds" : 30,
+           "HealthCheckPath" : { "Ref": "HealthCheckPath" },
+           "HealthCheckPort" : "traffic-port",
+           "HealthCheckProtocol" : "HTTP",
+           "HealthCheckTimeoutSeconds" : "5",
+           "HealthyThresholdCount" : "5",
+           "IpAddressType" : "ipv4",
+           "Name" : "Prac-TG",
+           "Port" : 80,
+           "Protocol" : "HTTP",
+           "ProtocolVersion" : "HTTP1",
+           "TargetType" : "ip",
+           "Targets" : [{
+             "Id" : {"Fn::ImportValue" : {"Fn::Sub": "InstanceIp1"}},
+             "Port" : 80},
+              {"Id" : {"Fn::ImportValue" : {"Fn::Sub": "InstanceIp2"}},
+              "Port" : 80}
+                 ],
+           "UnhealthyThresholdCount" : 2,
+           "VpcId" : {"Fn::ImportValue" : {"Fn::Sub": "PracVpcId"}}
+         }
+       },
+      "Listener": {
+        "Type": "AWS::ElasticLoadBalancingV2::Listener",
+        "Properties": {
+        "DefaultActions": [
+            {
+             "Type": "forward",
+             "TargetGroupArn": { "Ref": "PracTG" }
+                    }
+                  ],
+         "LoadBalancerArn":
+         { "Ref": "PracALB" }
+         ,
+         "Port": "80",
+         "Protocol": "HTTP"
+            }
+          }
+       },
+
+    "Outputs": {
+      "HostZoneId": {
+        "Value": {
+          "Fn::GetAtt": [
+            "PracALB",
+            "CanonicalHostedZoneID"
+          ]
+        },
+        "Export": {
+          "Name": "ALBHostedId"
+        },
+      "DNSName": {
+        "Value": {
+          "Fn::GetAtt": [
+            "PracALB",
+            "DNSName"
+          ]
+        },
+        "Export": {
+          "Name": "ALBDNSName"
+        }
+      }
+      
+
+    }
+}
